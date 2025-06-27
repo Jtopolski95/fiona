@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import styled from 'styled-components'
 import {
   DndContext,
@@ -16,6 +16,7 @@ import {
 } from '@dnd-kit/sortable'
 import PropertyCard from '../components/PropertyCard'
 import PropertySearch from '../components/PropertySearch'
+import PropertyModal from '../components/PropertyModal'
 import { useRentcastAPI } from '../hooks/useRentcastAPI'
 
 const PageContainer = styled.div`
@@ -70,6 +71,11 @@ const LoadingContainer = styled.div`
   height: 200px;
   font-size: 18px;
   color: #666;
+  
+  &.infinite-loading {
+    height: 60px;
+    margin: 20px 0;
+  }
 `
 
 const ErrorContainer = styled.div`
@@ -172,6 +178,11 @@ const HomePage = () => {
   const [properties, setProperties] = useState([])
   const [rankedProperties, setRankedProperties] = useState([])
   const [searchParams, setSearchParams] = useState({})
+  const [currentPage, setCurrentPage] = useState(1)
+  const [hasMore, setHasMore] = useState(true)
+  const [loadingMore, setLoadingMore] = useState(false)
+  const [selectedProperty, setSelectedProperty] = useState(null)
+  const observerRef = useRef()
   const { loading, error, fetchProperties, isUsingMockData } = useRentcastAPI()
 
   const sensors = useSensors(
@@ -181,28 +192,68 @@ const HomePage = () => {
     })
   )
 
+  // Infinite scroll observer
+  const lastPropertyElementRef = useCallback(node => {
+    if (loading || loadingMore) return
+    if (observerRef.current) observerRef.current.disconnect()
+    observerRef.current = new IntersectionObserver(entries => {
+      if (entries[0].isIntersecting && hasMore) {
+        loadMoreProperties()
+      }
+    })
+    if (node) observerRef.current.observe(node)
+  }, [loading, loadingMore, hasMore])
+
   useEffect(() => {
     // Load default properties on component mount
-    loadProperties()
+    loadProperties(true)
   }, [])
 
-  const loadProperties = async (params = {}) => {
+  const loadProperties = async (isNewSearch = false, params = {}) => {
     try {
+      const pageToLoad = isNewSearch ? 1 : currentPage
       const data = await fetchProperties({
         state: 'NY',
-        limit: 20,
+        limit: 10, // Smaller batches for infinite scroll
+        offset: (pageToLoad - 1) * 10,
         ...params
       })
-      setProperties(data)
-      setRankedProperties(data.map((property, index) => ({ ...property, rank: index + 1 })))
+      
+      if (isNewSearch) {
+        setProperties(data)
+        setRankedProperties(data.map((property, index) => ({ ...property, rank: index + 1 })))
+        setCurrentPage(2)
+        setHasMore(data.length === 10)
+      } else {
+        // Append new properties for infinite scroll
+        const newProperties = [...properties, ...data]
+        setProperties(newProperties)
+        setRankedProperties(newProperties.map((property, index) => ({ ...property, rank: index + 1 })))
+        setCurrentPage(prev => prev + 1)
+        setHasMore(data.length === 10)
+      }
     } catch (err) {
       console.error('Failed to load properties:', err)
+      setHasMore(false)
+    }
+  }
+
+  const loadMoreProperties = async () => {
+    if (loadingMore || !hasMore) return
+    
+    setLoadingMore(true)
+    try {
+      await loadProperties(false, searchParams)
+    } finally {
+      setLoadingMore(false)
     }
   }
 
   const handleSearch = async (params) => {
     setSearchParams(params)
-    await loadProperties(params)
+    setCurrentPage(1)
+    setHasMore(true)
+    await loadProperties(true, params)
   }
 
   const handleDragEnd = (event) => {
@@ -233,6 +284,14 @@ const HomePage = () => {
     if (searchParams.minBedrooms) parts.push(`${searchParams.minBedrooms}+ bedrooms`)
     
     return parts.length > 0 ? parts.join(', ') : 'all NY properties'
+  }
+
+  const handlePropertyClick = (property) => {
+    setSelectedProperty(property)
+  }
+
+  const handleCloseModal = () => {
+    setSelectedProperty(null)
   }
 
   if (loading && properties.length === 0) {
@@ -273,6 +332,7 @@ const HomePage = () => {
         <p>
           Drag and drop properties to rank them from most to least favorite. 
           Your rankings help you keep track of which homes you're most interested in visiting or pursuing.
+          Scroll down to see more properties!
         </p>
       </RankingInfo>
 
@@ -290,16 +350,30 @@ const HomePage = () => {
           >
             <SortableContext items={rankedProperties} strategy={verticalListSortingStrategy}>
               <PropertiesGrid>
-                {rankedProperties.map((property) => (
+                {rankedProperties.map((property, index) => (
                   <PropertyCard
                     key={property.id}
                     property={property}
                     rank={property.rank}
+                    onClick={handlePropertyClick}
+                    ref={index === rankedProperties.length - 1 ? lastPropertyElementRef : null}
                   />
                 ))}
               </PropertiesGrid>
             </SortableContext>
           </DndContext>
+
+          {loadingMore && (
+            <LoadingContainer className="infinite-loading">
+              <div>🏠 Loading more properties...</div>
+            </LoadingContainer>
+          )}
+
+          {!hasMore && rankedProperties.length > 0 && (
+            <LoadingContainer className="infinite-loading">
+              <div>🎉 You've seen all available properties!</div>
+            </LoadingContainer>
+          )}
         </>
       ) : (
         <NoResultsContainer>
@@ -315,6 +389,13 @@ const HomePage = () => {
         <ErrorContainer>
           <strong>Error:</strong> {error}
         </ErrorContainer>
+      )}
+
+      {selectedProperty && (
+        <PropertyModal 
+          property={selectedProperty} 
+          onClose={handleCloseModal} 
+        />
       )}
     </PageContainer>
   )

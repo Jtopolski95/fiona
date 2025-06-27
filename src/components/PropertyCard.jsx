@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, forwardRef } from 'react'
 import styled from 'styled-components'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
@@ -9,7 +9,7 @@ const CardContainer = styled.div`
   border-radius: 12px;
   overflow: hidden;
   transition: all 0.3s cubic-bezier(0.000, 0.000, 0.230, 1);
-  cursor: grab;
+  cursor: ${props => props.$isDragging ? 'grabbing' : 'pointer'};
   transform: ${props => props.transform};
   transition: ${props => props.transition};
   opacity: ${props => props.$isDragging ? 0.5 : 1};
@@ -21,10 +21,6 @@ const CardContainer = styled.div`
     transform: translateY(-2px);
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
   }
-
-  &:active {
-    cursor: grabbing;
-  }
   
   @media (max-width: 768px) {
     flex-direction: column;
@@ -32,7 +28,7 @@ const CardContainer = styled.div`
   }
 `
 
-const RankSection = styled.div`
+const DragHandle = styled.div`
   background: linear-gradient(135deg, var(--royal-purple), #8A5FBF);
   color: var(--white);
   display: flex;
@@ -40,6 +36,11 @@ const RankSection = styled.div`
   justify-content: center;
   min-width: 80px;
   flex-shrink: 0;
+  cursor: grab;
+  
+  &:active {
+    cursor: grabbing;
+  }
   
   .rank-number {
     font-size: 32px;
@@ -90,28 +91,24 @@ const ImagePlaceholder = styled.div`
   font-size: 14px;
 `
 
-const FavoriteButton = styled.button`
+const ClickIndicator = styled.div`
   position: absolute;
   top: 8px;
   right: 8px;
-  background-color: ${props => props.$isFavorite ? 'var(--royal-purple)' : 'rgba(255, 255, 255, 0.9)'};
-  color: ${props => props.$isFavorite ? 'var(--white)' : 'var(--black)'};
-  border: 2px solid ${props => props.$isFavorite ? 'var(--royal-purple)' : 'var(--black)'};
-  border-radius: 50%;
-  width: 32px;
-  height: 32px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 14px;
-  transition: all 0.3s cubic-bezier(0.000, 0.000, 0.230, 1);
-  z-index: 10;
-
-  &:hover {
-    background-color: var(--royal-purple);
-    color: var(--white);
-    transform: scale(1.1);
+  background-color: rgba(106, 76, 147, 0.9);
+  color: white;
+  border-radius: 20px;
+  padding: 4px 8px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: 5;
+  
+  ${CardContainer}:hover & {
+    opacity: 1;
   }
 `
 
@@ -121,6 +118,7 @@ const CardContent = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  cursor: pointer;
 `
 
 const PropertyHeader = styled.div`
@@ -217,9 +215,7 @@ const MortgageEstimate = styled.div`
   }
 `
 
-
-
-const PropertyCard = ({ property, onToggleFavorite }) => {
+const PropertyCard = forwardRef(({ property, rank, onClick }, ref) => {
   const [imageError, setImageError] = useState(false)
   
   const {
@@ -266,28 +262,38 @@ const PropertyCard = ({ property, onToggleFavorite }) => {
     }).format(monthlyPayment)
   }
 
+  const handleCardClick = (e) => {
+    // Don't trigger if clicking on the drag handle
+    if (e.target.closest('[data-drag-handle]')) {
+      return
+    }
+    if (onClick) {
+      onClick(property)
+    }
+  }
+
   return (
     <CardContainer
-      ref={setNodeRef}
+      ref={node => {
+        setNodeRef(node)
+        if (ref) ref.current = node
+      }}
       style={style}
       $isDragging={isDragging}
-      {...attributes}
-      {...listeners}
+      onClick={handleCardClick}
     >
-      <RankSection>
-        <div className="rank-number">#{property.rank}</div>
-      </RankSection>
+      <DragHandle 
+        data-drag-handle="true"
+        {...attributes}
+        {...listeners}
+      >
+        <div className="rank-number">#{rank}</div>
+      </DragHandle>
       
       <ImageContainer>
-        <FavoriteButton
-          $isFavorite={property.isFavorite}
-          onClick={(e) => {
-            e.stopPropagation()
-            onToggleFavorite(property.id)
-          }}
-        >
-          {property.isFavorite ? '❤️' : '🤍'}
-        </FavoriteButton>
+        <ClickIndicator>
+          View Details
+        </ClickIndicator>
         
         {property.photos && property.photos.length > 0 && !imageError ? (
           <PropertyImage
@@ -341,6 +347,8 @@ const PropertyCard = ({ property, onToggleFavorite }) => {
       </CardContent>
     </CardContainer>
   )
-}
+})
+
+PropertyCard.displayName = 'PropertyCard'
 
 export default PropertyCard 

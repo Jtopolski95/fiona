@@ -6,9 +6,28 @@ const PuppyContainer = styled.div`
   width: 100vw;
   height: 100vh;
   overflow: hidden;
-  background: linear-gradient(135deg, #87CEEB, #98FB98);
+  background: ${props => props.$backgroundImage 
+    ? `url(${props.$backgroundImage}) center/cover no-repeat`
+    : 'linear-gradient(135deg, #87CEEB, #98FB98)'
+  };
   cursor: none;
   image-rendering: pixelated;
+  
+  /* Add overlay for better puppy visibility */
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: ${props => props.$backgroundImage 
+      ? 'rgba(255, 255, 255, 0.1)'
+      : 'transparent'
+    };
+    pointer-events: none;
+    z-index: 1;
+  }
 `
 
 const bounce = keyframes`
@@ -324,7 +343,7 @@ const Instructions = styled.div`
   position: absolute;
   top: 20px;
   left: 20px;
-  background: rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.95);
   padding: 15px;
   border-radius: 10px;
   border: 2px solid #6A4C93;
@@ -347,7 +366,7 @@ const Instructions = styled.div`
   }
 `
 
-const InteractivePuppy = () => {
+const InteractivePuppy = ({ backgroundImage, backgroundName }) => {
   const [puppyPosition, setPuppyPosition] = useState({ x: 200, y: 200 })
   const [isHappy, setIsHappy] = useState(false)
   const [isWalking, setIsWalking] = useState(false)
@@ -413,13 +432,30 @@ const InteractivePuppy = () => {
     }
   }, [])
 
+  const getLocationText = () => {
+    switch(backgroundName) {
+      case 'catskills':
+        return 'Exploring the beautiful Catskills Mountains! 🏔️'
+      case 'paris':
+        return 'Visiting the magnificent Louvre in Paris! 🏛️'
+      case 'brooklyn':
+        return 'Playing in Brooklyn\'s Prospect Park! 🌳'
+      default:
+        return 'Playing in Fiona\'s Playground! 🎾'
+    }
+  }
+
   return (
-    <PuppyContainer onMouseMove={handleMouseMove} onClick={handleClick}>
+    <PuppyContainer 
+      onMouseMove={handleMouseMove} 
+      onClick={handleClick}
+      $backgroundImage={backgroundImage}
+    >
       <Instructions>
-        <h3>🐕 Fiona's Playground</h3>
+        <h3>🐕 Fiona's Adventure</h3>
+        <p><strong>{getLocationText()}</strong></p>
         <p><strong>Move your mouse</strong> near Fiona to make her happy!</p>
         <p><strong>Click anywhere</strong> to make her walk there!</p>
-        <p>Watch her tail wag and tongue pant! 🎾</p>
       </Instructions>
       
       <Puppy 
