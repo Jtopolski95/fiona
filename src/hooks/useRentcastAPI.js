@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import axios from 'axios'
 
 // NY Cities for autocomplete
 export const NY_CITIES = [
@@ -154,55 +153,15 @@ const MOCK_PROPERTIES = [
   }
 ]
 
-const RENTCAST_API_KEY = process.env.REACT_APP_RENTCAST_API_KEY
-const RENTCAST_BASE_URL = process.env.REACT_APP_RENTCAST_BASE_URL || 'https://api.rentcast.io/v1'
-const USE_MOCK_DATA = !RENTCAST_API_KEY || process.env.NODE_ENV === 'development'
-
 export const useRentcastAPI = () => {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
-
-  // Transform Rentcast API response to our format
-  const transformRentcastData = (rentcastProperty) => {
-    return {
-      id: rentcastProperty.id || Math.random().toString(36).substr(2, 9),
-      address: rentcastProperty.address || rentcastProperty.formattedAddress,
-      city: rentcastProperty.city,
-      state: rentcastProperty.state,
-      zipCode: rentcastProperty.zipCode,
-      price: rentcastProperty.price || rentcastProperty.rentEstimate,
-      bedrooms: rentcastProperty.bedrooms,
-      bathrooms: rentcastProperty.bathrooms,
-      squareFootage: rentcastProperty.squareFootage,
-      propertyType: rentcastProperty.propertyType,
-      description: rentcastProperty.description || `${rentcastProperty.propertyType} in ${rentcastProperty.city}, NY`,
-      photos: rentcastProperty.photos || [
-        'https://images.unsplash.com/photo-1570129477492-45c003edd2be?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'
-      ],
-      agent: rentcastProperty.agent || {
-        name: 'Contact Agent',
-        phone: 'N/A',
-        email: 'N/A'
-      },
-      listingDate: rentcastProperty.listDate || new Date().toISOString().split('T')[0],
-      isFavorite: false
-    }
-  }
 
   const fetchProperties = async (params = {}) => {
     setLoading(true)
     setError(null)
 
     try {
-      // TEMPORARILY DISABLED: Always use mock data for testing
-      // const apiKey = import.meta.env.VITE_RENTCAST_API_KEY
-      // 
-      // if (!apiKey) {
-      //   console.warn('No Rentcast API key found, using mock data')
-      //   await new Promise(resolve => setTimeout(resolve, 1000)) // Simulate API delay
-      //   return MOCK_PROPERTIES
-      // }
-
       // Simulate API delay for realistic testing
       await new Promise(resolve => setTimeout(resolve, 800))
       
@@ -262,44 +221,27 @@ export const useRentcastAPI = () => {
     setError(null)
 
     try {
-      if (USE_MOCK_DATA) {
-        // Simulate API delay
-        await new Promise(resolve => setTimeout(resolve, 500))
-        
-        const property = MOCK_PROPERTIES.find(p => p.id === propertyId)
-        if (!property) {
-          throw new Error('Property not found')
-        }
-        
-        setLoading(false)
-        return property
-
-      } else {
-        // Real API call to get property details
-        const response = await axios.get(`${RENTCAST_BASE_URL}/properties/${propertyId}`, {
-          headers: {
-            'X-API-Key': RENTCAST_API_KEY,
-            'accept': 'application/json'
-          }
-        })
-
-        const transformedData = transformRentcastData(response.data)
-        setLoading(false)
-        return transformedData
+      // Simulate API delay
+      await new Promise(resolve => setTimeout(resolve, 500))
+      
+      const property = MOCK_PROPERTIES.find(p => p.id === propertyId)
+      if (!property) {
+        throw new Error('Property not found')
       }
+      
+      return property
 
     } catch (err) {
       console.error('Property Details Error:', err)
-      setLoading(false)
-      setError(err.response?.data?.message || err.message || 'Failed to fetch property details')
+      setError(err.message || 'Failed to fetch property details')
       throw err
+    } finally {
+      setLoading(false)
     }
   }
 
   const searchByLocation = async (query) => {
     // For NY state location search
-    const nyQuery = `${query}, NY`
-    
     return fetchProperties({
       city: query,
       state: 'NY',
