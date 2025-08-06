@@ -6,39 +6,61 @@ const NavbarContainer = styled.nav`
   top: 0;
   left: 0;
   right: 0;
-  height: 60px;
-  background-color: var(--white);
-  border-bottom: 2px solid var(--black);
+  height: 70px;
+  background: linear-gradient(135deg, var(--primary-blue), var(--light-blue));
+  border-bottom: 2px solid var(--accent-blue);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 20px;
+  padding: 0 24px;
   z-index: 1000;
+  box-shadow: 0 2px 10px rgba(70, 130, 180, 0.2);
+  
+  /* iOS safe area support */
+  padding-top: env(safe-area-inset-top);
+  height: calc(70px + env(safe-area-inset-top));
+  
+  @media (max-width: 768px) {
+    padding: 0 20px;
+    height: calc(70px + env(safe-area-inset-top));
+  }
 `
 
 const Title = styled.h1`
   margin: 0;
-  font-size: 24px;
+  font-size: 26px;
   font-weight: 600;
-  color: var(--black);
+  color: var(--white);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
   
   @media (max-width: 480px) {
-    font-size: 20px;
+    font-size: 22px;
   }
 `
 
 const TerrierButton = styled.button`
-  background: none;
-  border: none;
+  background: var(--white);
+  border: 2px solid var(--accent-blue);
   cursor: pointer;
-  padding: 8px;
-  width: 52px;
-  height: 52px;
+  padding: 10px;
+  width: 56px;
+  height: 56px;
   position: relative;
   transition: all 0.3s cubic-bezier(0.000, 0.000, 0.230, 1);
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(70, 130, 180, 0.3);
+  
+  /* Better touch target for mobile */
+  @media (max-width: 768px) {
+    width: 60px;
+    height: 60px;
+    padding: 12px;
+  }
 
   &:hover {
     transform: scale(1.1);
+    background: var(--light-blue);
+    box-shadow: 0 4px 12px rgba(70, 130, 180, 0.4);
   }
 `
 

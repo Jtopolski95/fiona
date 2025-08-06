@@ -7,24 +7,33 @@ const DrawerContainer = styled.aside`
   left: 0;
   width: 280px;
   height: 100vh;
-  background-color: var(--black);
+  background: linear-gradient(180deg, var(--accent-blue), var(--primary-blue));
   transform: translateX(${props => props.$isOpen ? '0' : '-100%'});
   transition: transform 0.3s cubic-bezier(0.000, 0.000, 0.230, 1);
   z-index: 1001;
   overflow-y: auto;
+  box-shadow: 2px 0 20px rgba(70, 130, 180, 0.3);
+  
+  /* iOS safe area support */
+  padding-top: env(safe-area-inset-top);
 `
 
 const DrawerHeader = styled.div`
   padding: 20px;
-  border-bottom: 1px solid #333;
-  margin-top: 60px; /* Account for navbar */
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  margin-top: 70px; /* Account for navbar */
+  
+  @media (max-width: 768px) {
+    margin-top: calc(70px + env(safe-area-inset-top));
+  }
 `
 
 const DrawerTitle = styled.h2`
   color: var(--white);
-  font-size: 20px;
+  font-size: 22px;
   font-weight: 600;
   margin: 0;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 `
 
 const DrawerNav = styled.nav`
@@ -33,19 +42,25 @@ const DrawerNav = styled.nav`
 
 const DrawerLink = styled(Link)`
   display: block;
-  padding: 15px 20px;
+  padding: 18px 24px;
   color: var(--white);
   text-decoration: none;
-  font-size: 16px;
+  font-size: 18px;
   font-weight: 500;
   transition: all 0.3s cubic-bezier(0.000, 0.000, 0.230, 1);
   border-left: 4px solid transparent;
-  background-color: ${props => props.$isActive ? 'var(--royal-purple)' : 'transparent'};
-  border-left-color: ${props => props.$isActive ? 'var(--royal-purple)' : 'transparent'};
+  background-color: ${props => props.$isActive ? 'rgba(255, 255, 255, 0.2)' : 'transparent'};
+  border-left-color: ${props => props.$isActive ? 'var(--white)' : 'transparent'};
+  
+  /* Better touch targets on mobile */
+  @media (max-width: 768px) {
+    padding: 20px 24px;
+    font-size: 20px;
+  }
 
   &:hover {
-    background-color: var(--royal-purple);
-    border-left-color: var(--royal-purple);
+    background-color: rgba(255, 255, 255, 0.15);
+    border-left-color: var(--white);
   }
 
   &:active {

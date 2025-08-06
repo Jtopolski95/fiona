@@ -1,29 +1,40 @@
 :root {
-  --royal-purple: #6A4C93;
+  --primary-blue: #87CEEB;
+  --light-blue: #B0E0E6;
+  --pastel-blue: #F0F8FF;
+  --accent-blue: #4682B4;
   --black: #000000;
   --white: #FFFFFF;
   --light-gray: #F5F5F5;
+  --text-dark: #2C3E50;
+  --text-light: #5A6C7D;
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
 
   color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  color: var(--text-dark);
+  background-color: var(--pastel-blue);
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  
+  /* iOS-specific optimizations */
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
 }
 
 a {
   font-weight: 500;
-  color: #646cff;
+  color: var(--accent-blue);
   text-decoration: inherit;
 }
 a:hover {
-  color: #535bf2;
+  color: var(--primary-blue);
 }
 
 body {
@@ -32,11 +43,19 @@ body {
   place-items: center;
   min-width: 320px;
   min-height: 100vh;
+  background-color: var(--pastel-blue);
+  
+  /* iOS safe area support */
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
 }
 
 h1 {
   font-size: 3.2em;
   line-height: 1.1;
+  color: var(--text-dark);
 }
 
 button {
@@ -46,28 +65,35 @@ button {
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
-  background-color: #1a1a1a;
+  background-color: var(--primary-blue);
+  color: var(--white);
   cursor: pointer;
   transition: border-color 0.25s;
+  
+  /* Better touch targets for mobile */
+  min-height: 44px;
+  min-width: 44px;
 }
 button:hover {
-  border-color: #646cff;
+  background-color: var(--accent-blue);
 }
 button:focus,
 button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+  outline: 2px solid var(--accent-blue);
+  outline-offset: 2px;
 }
 
 @media (prefers-color-scheme: light) {
   :root {
-    color: #213547;
-    background-color: #ffffff;
+    color: var(--text-dark);
+    background-color: var(--pastel-blue);
   }
   a:hover {
-    color: #747bff;
+    color: var(--primary-blue);
   }
   button {
-    background-color: #f9f9f9;
+    background-color: var(--primary-blue);
+    color: var(--white);
   }
 }
 
@@ -84,14 +110,15 @@ html, body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: var(--white);
-  color: var(--black);
+  background-color: var(--pastel-blue);
+  color: var(--text-dark);
 }
 
 #root {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  background-color: var(--pastel-blue);
 }
 
 /* Button and interactive elements with smooth transitions */
@@ -100,18 +127,54 @@ html, body {
   cursor: pointer;
   border: none;
   outline: none;
+  /* Better touch targets */
+  min-height: 44px;
+  padding: 12px 16px;
 }
 
 .interactive-element:hover,
 .interactive-element.selected {
-  background-color: var(--royal-purple);
+  background-color: var(--primary-blue);
   color: var(--white);
 }
 
-/* Mobile-first responsive design */
+/* Enhanced mobile-first responsive design */
 @media (max-width: 768px) {
   body {
+    font-size: 18px; /* Larger for better readability on mobile */
+  }
+  
+  /* Larger touch targets on mobile */
+  button, .interactive-element {
+    min-height: 48px;
     font-size: 16px;
+    padding: 14px 20px;
+  }
+  
+  /* Better spacing on mobile */
+  h1 {
+    font-size: 2.5em;
+  }
+  
+  h2 {
+    font-size: 1.8em;
+  }
+  
+  h3 {
+    font-size: 1.4em;
+  }
+}
+
+/* iOS-specific styles */
+@supports (-webkit-touch-callout: none) {
+  /* iOS Safari specific styles */
+  input, textarea, select {
+    font-size: 16px; /* Prevents zoom on focus */
+  }
+  
+  /* Better scrolling on iOS */
+  * {
+    -webkit-overflow-scrolling: touch;
   }
 }
 

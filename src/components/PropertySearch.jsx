@@ -4,108 +4,178 @@ import { NY_CITIES } from '../hooks/useRentcastAPI'
 
 const SearchContainer = styled.div`
   background: white;
-  padding: 20px;
-  border-radius: 12px;
-  border: 2px solid #6A4C93;
-  margin-bottom: 20px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 24px;
+  border-radius: 20px;
+  border: 2px solid var(--light-blue);
+  margin-bottom: 24px;
+  box-shadow: 0 6px 20px rgba(135, 206, 235, 0.2);
+  
+  @media (max-width: 768px) {
+    padding: 20px;
+    border-radius: 24px;
+    margin-bottom: 20px;
+  }
 `
 
 const SearchTitle = styled.h3`
-  color: #6A4C93;
-  margin: 0 0 15px 0;
-  font-size: 18px;
+  color: var(--accent-blue);
+  margin: 0 0 20px 0;
+  font-size: 20px;
   font-weight: 600;
+  
+  @media (max-width: 768px) {
+    font-size: 22px;
+    margin-bottom: 24px;
+  }
 `
 
 const SearchGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 15px;
-  margin-bottom: 15px;
+  gap: 20px;
+  margin-bottom: 20px;
+  
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+    gap: 24px;
+    margin-bottom: 24px;
+  }
 `
 
 const SearchField = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  gap: 8px;
 `
 
 const Label = styled.label`
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 500;
-  color: #333;
+  color: var(--text-dark);
+  
+  @media (max-width: 768px) {
+    font-size: 18px;
+  }
 `
 
 const Input = styled.input`
-  padding: 10px;
-  border: 2px solid #ddd;
-  border-radius: 6px;
-  font-size: 14px;
+  padding: 14px 16px;
+  border: 2px solid var(--light-blue);
+  border-radius: 12px;
+  font-size: 16px;
   transition: border-color 0.2s;
+  background-color: var(--white);
+  color: var(--text-dark);
+  
+  /* Better touch targets on mobile */
+  @media (max-width: 768px) {
+    padding: 16px 20px;
+    font-size: 18px;
+    border-radius: 16px;
+  }
   
   &:focus {
     outline: none;
-    border-color: #6A4C93;
+    border-color: var(--primary-blue);
+    box-shadow: 0 0 0 3px rgba(135, 206, 235, 0.2);
   }
 `
 
 const Select = styled.select`
-  padding: 10px;
-  border: 2px solid #ddd;
-  border-radius: 6px;
-  font-size: 14px;
+  padding: 14px 16px;
+  border: 2px solid var(--light-blue);
+  border-radius: 12px;
+  font-size: 16px;
   background: white;
   transition: border-color 0.2s;
+  color: var(--text-dark);
+  
+  /* Better touch targets on mobile */
+  @media (max-width: 768px) {
+    padding: 16px 20px;
+    font-size: 18px;
+    border-radius: 16px;
+  }
   
   &:focus {
     outline: none;
-    border-color: #6A4C93;
+    border-color: var(--primary-blue);
+    box-shadow: 0 0 0 3px rgba(135, 206, 235, 0.2);
   }
 `
 
 const SearchButton = styled.button`
-  background: #6A4C93;
+  background: linear-gradient(135deg, var(--primary-blue), var(--accent-blue));
   color: white;
   border: none;
-  padding: 12px 24px;
-  border-radius: 6px;
-  font-size: 16px;
+  padding: 16px 32px;
+  border-radius: 12px;
+  font-size: 18px;
   font-weight: 600;
   cursor: pointer;
   transition: background-color 0.2s;
+  box-shadow: 0 4px 12px rgba(135, 206, 235, 0.3);
+  
+  /* Better touch targets on mobile */
+  @media (max-width: 768px) {
+    padding: 18px 36px;
+    font-size: 20px;
+    border-radius: 16px;
+    width: 100%;
+  }
   
   &:hover {
-    background: #5a3d7a;
+    background: linear-gradient(135deg, var(--accent-blue), var(--primary-blue));
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(135, 206, 235, 0.4);
   }
   
   &:disabled {
-    background: #ccc;
+    background: var(--light-gray);
     cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
   }
 `
 
 const ClearButton = styled.button`
   background: transparent;
-  color: #6A4C93;
-  border: 2px solid #6A4C93;
-  padding: 10px 20px;
-  border-radius: 6px;
-  font-size: 14px;
+  color: var(--accent-blue);
+  border: 2px solid var(--primary-blue);
+  padding: 14px 28px;
+  border-radius: 12px;
+  font-size: 16px;
   cursor: pointer;
   transition: all 0.2s;
+  font-weight: 500;
+  
+  /* Better touch targets on mobile */
+  @media (max-width: 768px) {
+    padding: 16px 32px;
+    font-size: 18px;
+    border-radius: 16px;
+    width: 100%;
+    margin-bottom: 12px;
+  }
   
   &:hover {
-    background: #6A4C93;
+    background: var(--primary-blue);
     color: white;
+    transform: translateY(-1px);
   }
 `
 
 const ButtonGroup = styled.div`
   display: flex;
-  gap: 10px;
+  gap: 16px;
   justify-content: flex-end;
-  margin-top: 15px;
+  margin-top: 20px;
+  
+  @media (max-width: 768px) {
+    flex-direction: column;
+    gap: 0;
+    margin-top: 24px;
+  }
 `
 
 const SuggestionsList = styled.div`
@@ -114,21 +184,30 @@ const SuggestionsList = styled.div`
   left: 0;
   right: 0;
   background: white;
-  border: 2px solid #ddd;
+  border: 2px solid var(--light-blue);
   border-top: none;
-  border-radius: 0 0 6px 6px;
+  border-radius: 0 0 12px 12px;
   max-height: 200px;
   overflow-y: auto;
   z-index: 10;
+  box-shadow: 0 4px 12px rgba(135, 206, 235, 0.2);
 `
 
 const SuggestionItem = styled.div`
-  padding: 10px;
+  padding: 14px 16px;
   cursor: pointer;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid var(--light-blue);
+  font-size: 16px;
+  color: var(--text-dark);
+  
+  @media (max-width: 768px) {
+    padding: 16px 20px;
+    font-size: 18px;
+  }
   
   &:hover {
-    background: #f5f5f5;
+    background: var(--pastel-blue);
+    color: var(--accent-blue);
   }
   
   &:last-child {

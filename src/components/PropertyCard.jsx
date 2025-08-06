@@ -5,8 +5,8 @@ import { CSS } from '@dnd-kit/utilities'
 
 const CardContainer = styled.div`
   background-color: var(--white);
-  border: 2px solid var(--black);
-  border-radius: 12px;
+  border: 2px solid var(--light-blue);
+  border-radius: 16px;
   overflow: hidden;
   transition: all 0.3s cubic-bezier(0.000, 0.000, 0.230, 1);
   cursor: ${props => props.$isDragging ? 'grabbing' : 'pointer'};
@@ -16,20 +16,24 @@ const CardContainer = styled.div`
   display: flex;
   align-items: stretch;
   min-height: 160px;
+  box-shadow: 0 4px 12px rgba(135, 206, 235, 0.2);
 
   &:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 8px 25px rgba(135, 206, 235, 0.3);
+    border-color: var(--primary-blue);
   }
   
   @media (max-width: 768px) {
     flex-direction: column;
     min-height: auto;
+    border-radius: 20px;
+    margin-bottom: 8px;
   }
 `
 
 const DragHandle = styled.div`
-  background: linear-gradient(135deg, var(--royal-purple), #8A5FBF);
+  background: linear-gradient(135deg, var(--primary-blue), var(--accent-blue));
   color: var(--white);
   display: flex;
   align-items: center;
@@ -37,23 +41,24 @@ const DragHandle = styled.div`
   min-width: 80px;
   flex-shrink: 0;
   cursor: grab;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2);
   
   &:active {
     cursor: grabbing;
   }
   
   .rank-number {
-    font-size: 32px;
+    font-size: 36px;
     font-weight: 700;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
   }
   
   @media (max-width: 768px) {
     min-width: auto;
-    min-height: 60px;
+    min-height: 70px;
     
     .rank-number {
-      font-size: 24px;
+      font-size: 28px;
     }
   }
 `
@@ -62,10 +67,12 @@ const ImageContainer = styled.div`
   position: relative;
   width: 200px;
   flex-shrink: 0;
+  border-radius: 0 0 0 0;
+  overflow: hidden;
   
   @media (max-width: 768px) {
     width: 100%;
-    height: 150px;
+    height: 180px;
   }
 `
 
@@ -83,29 +90,31 @@ const PropertyImage = styled.img`
 const ImagePlaceholder = styled.div`
   width: 100%;
   height: 100%;
-  background: linear-gradient(135deg, #f0f0f0, #e0e0e0);
+  background: linear-gradient(135deg, var(--light-blue), var(--primary-blue));
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #999;
-  font-size: 14px;
+  color: var(--white);
+  font-size: 16px;
+  font-weight: 500;
 `
 
 const ClickIndicator = styled.div`
   position: absolute;
   top: 8px;
   right: 8px;
-  background-color: rgba(106, 76, 147, 0.9);
+  background-color: rgba(70, 130, 180, 0.9);
   color: white;
-  border-radius: 20px;
-  padding: 4px 8px;
-  font-size: 12px;
+  border-radius: 24px;
+  padding: 6px 12px;
+  font-size: 14px;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   opacity: 0;
   transition: opacity 0.3s ease;
   z-index: 5;
+  backdrop-filter: blur(4px);
   
   ${CardContainer}:hover & {
     opacity: 1;
@@ -113,55 +122,73 @@ const ClickIndicator = styled.div`
 `
 
 const CardContent = styled.div`
-  padding: 16px;
+  padding: 20px;
   flex: 1;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   cursor: pointer;
+  
+  @media (max-width: 768px) {
+    padding: 24px;
+  }
 `
 
 const PropertyHeader = styled.div`
-  margin-bottom: 12px;
+  margin-bottom: 16px;
 `
 
 const Price = styled.h2`
-  font-size: 24px;
+  font-size: 28px;
   font-weight: 700;
-  color: var(--royal-purple);
+  color: var(--accent-blue);
   margin: 0 0 4px 0;
+  
+  @media (max-width: 768px) {
+    font-size: 32px;
+  }
 `
 
 const Address = styled.p`
-  font-size: 14px;
-  color: var(--black);
+  font-size: 16px;
+  color: var(--text-dark);
   margin: 0;
   font-weight: 500;
+  
+  @media (max-width: 768px) {
+    font-size: 18px;
+  }
 `
 
 const PropertyDetails = styled.div`
   display: flex;
-  gap: 20px;
-  margin: 12px 0;
+  gap: 24px;
+  margin: 16px 0;
   
   @media (max-width: 768px) {
-    gap: 15px;
+    gap: 20px;
+    justify-content: space-between;
   }
 `
 
 const DetailItem = styled.div`
   .label {
-    font-size: 10px;
-    color: #666;
+    font-size: 12px;
+    color: var(--text-light);
     text-transform: uppercase;
     letter-spacing: 0.5px;
     margin-bottom: 2px;
+    font-weight: 500;
   }
   
   .value {
-    font-size: 16px;
+    font-size: 18px;
     font-weight: 600;
-    color: var(--black);
+    color: var(--text-dark);
+    
+    @media (max-width: 768px) {
+      font-size: 20px;
+    }
   }
 `
 
@@ -170,10 +197,11 @@ const BottomSection = styled.div`
   justify-content: space-between;
   align-items: center;
   margin-top: auto;
+  gap: 16px;
   
   @media (max-width: 768px) {
     flex-direction: column;
-    gap: 8px;
+    gap: 12px;
     align-items: flex-start;
   }
 `
@@ -183,35 +211,55 @@ const AgentInfo = styled.div`
 `
 
 const AgentName = styled.h4`
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 600;
-  color: var(--black);
+  color: var(--text-dark);
   margin: 0 0 2px 0;
+  
+  @media (max-width: 768px) {
+    font-size: 18px;
+  }
 `
 
 const AgentContact = styled.p`
-  font-size: 12px;
-  color: #666;
+  font-size: 14px;
+  color: var(--text-light);
   margin: 0;
+  
+  @media (max-width: 768px) {
+    font-size: 16px;
+  }
 `
 
 const MortgageEstimate = styled.div`
-  background-color: var(--royal-purple);
+  background: linear-gradient(135deg, var(--primary-blue), var(--accent-blue));
   color: var(--white);
-  padding: 6px 12px;
-  border-radius: 6px;
+  padding: 10px 16px;
+  border-radius: 12px;
   text-align: center;
   flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(135, 206, 235, 0.3);
+  
+  @media (max-width: 768px) {
+    padding: 12px 20px;
+    width: 100%;
+  }
   
   .label {
-    font-size: 10px;
+    font-size: 12px;
     opacity: 0.9;
     margin-bottom: 2px;
+    font-weight: 500;
+    letter-spacing: 0.5px;
   }
   
   .amount {
-    font-size: 14px;
+    font-size: 16px;
     font-weight: 600;
+    
+    @media (max-width: 768px) {
+      font-size: 18px;
+    }
   }
 `
 

@@ -20,44 +20,65 @@ import PropertyModal from '../components/PropertyModal'
 import { useRentcastAPI } from '../hooks/useRentcastAPI'
 
 const PageContainer = styled.div`
-  padding: 20px;
+  padding: 24px;
   max-width: 1200px;
   margin: 0 auto;
+  background-color: var(--pastel-blue);
+  min-height: 100vh;
   
   @media (max-width: 768px) {
-    padding: 15px;
+    padding: 20px 16px;
   }
 `
 
 const PageHeader = styled.div`
-  margin-bottom: 30px;
+  margin-bottom: 32px;
+  
+  @media (max-width: 768px) {
+    margin-bottom: 28px;
+  }
 `
 
 const PageTitle = styled.h1`
-  font-size: 32px;
+  font-size: 36px;
   font-weight: 700;
-  color: var(--black);
-  margin-bottom: 10px;
+  color: var(--text-dark);
+  margin-bottom: 12px;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
   
   @media (max-width: 768px) {
-    font-size: 26px;
+    font-size: 32px;
+    margin-bottom: 16px;
   }
 `
 
 const PageSubtitle = styled.p`
-  font-size: 16px;
-  color: #666;
-  margin-bottom: 20px;
+  font-size: 18px;
+  color: var(--text-light);
+  margin-bottom: 24px;
+  line-height: 1.6;
+  
+  @media (max-width: 768px) {
+    font-size: 20px;
+    margin-bottom: 28px;
+  }
 `
 
 const ApiStatusBanner = styled.div`
-  background: ${props => props.$isUsingMock ? '#fff3cd' : '#d1edff'};
-  border: 2px solid ${props => props.$isUsingMock ? '#ffc107' : '#0ea5e9'};
-  border-radius: 8px;
-  padding: 12px 16px;
-  margin-bottom: 20px;
-  font-size: 14px;
-  color: ${props => props.$isUsingMock ? '#856404' : '#0369a1'};
+  background: ${props => props.$isUsingMock ? 'linear-gradient(135deg, #fff3cd, #ffeaa7)' : 'linear-gradient(135deg, var(--light-blue), var(--pastel-blue))'};
+  border: 2px solid ${props => props.$isUsingMock ? '#fdcb6e' : 'var(--primary-blue)'};
+  border-radius: 16px;
+  padding: 16px 20px;
+  margin-bottom: 24px;
+  font-size: 16px;
+  color: ${props => props.$isUsingMock ? '#6c5ce7' : 'var(--accent-blue)'};
+  box-shadow: 0 4px 12px rgba(135, 206, 235, 0.2);
+  
+  @media (max-width: 768px) {
+    padding: 18px 24px;
+    font-size: 18px;
+    border-radius: 20px;
+  }
   
   strong {
     font-weight: 600;
@@ -69,108 +90,187 @@ const LoadingContainer = styled.div`
   justify-content: center;
   align-items: center;
   height: 200px;
-  font-size: 18px;
-  color: #666;
+  font-size: 20px;
+  color: var(--text-light);
+  font-weight: 500;
+  
+  @media (max-width: 768px) {
+    font-size: 22px;
+    height: 240px;
+  }
   
   &.infinite-loading {
-    height: 60px;
-    margin: 20px 0;
+    height: 80px;
+    margin: 24px 0;
   }
 `
 
 const ErrorContainer = styled.div`
-  background-color: #ffe6e6;
+  background: linear-gradient(135deg, #ffe6e6, #ffcccb);
   border: 2px solid #ff6b6b;
-  border-radius: 8px;
-  padding: 20px;
-  margin: 20px 0;
+  border-radius: 16px;
+  padding: 24px;
+  margin: 24px 0;
   color: #d00;
   text-align: center;
+  font-size: 16px;
+  
+  @media (max-width: 768px) {
+    padding: 28px;
+    font-size: 18px;
+    border-radius: 20px;
+  }
 `
 
 const PropertiesGrid = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 16px;
   max-width: 800px;
   margin: 0 auto;
+  
+  @media (max-width: 768px) {
+    gap: 20px;
+  }
 `
 
 const RankingInfo = styled.div`
-  background: linear-gradient(135deg, var(--royal-purple), #8A5FBF);
+  background: linear-gradient(135deg, var(--primary-blue), var(--accent-blue));
   color: var(--white);
-  border-radius: 12px;
-  padding: 20px;
-  margin-bottom: 25px;
-  box-shadow: 0 4px 15px rgba(106, 76, 147, 0.3);
+  border-radius: 20px;
+  padding: 24px;
+  margin-bottom: 28px;
+  box-shadow: 0 6px 20px rgba(135, 206, 235, 0.3);
+  
+  @media (max-width: 768px) {
+    padding: 28px;
+    margin-bottom: 32px;
+    border-radius: 24px;
+  }
   
   h3 {
     margin: 0 0 10px 0;
-    font-size: 18px;
+    font-size: 20px;
     font-weight: 600;
+    
+    @media (max-width: 768px) {
+      font-size: 24px;
+      margin-bottom: 16px;
+    }
   }
   
   p {
     margin: 0;
-    font-size: 14px;
+    font-size: 16px;
     opacity: 0.9;
     line-height: 1.4;
+    
+    @media (max-width: 768px) {
+      font-size: 18px;
+      line-height: 1.5;
+    }
   }
 `
 
 const RankingHeader = styled.div`
   background-color: var(--white);
-  border: 2px solid var(--black);
-  border-radius: 8px;
-  padding: 15px 20px;
-  margin-bottom: 20px;
+  border: 2px solid var(--light-blue);
+  border-radius: 16px;
+  padding: 20px 24px;
+  margin-bottom: 24px;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  box-shadow: 0 4px 12px rgba(135, 206, 235, 0.2);
+  
+  @media (max-width: 768px) {
+    padding: 24px;
+    border-radius: 20px;
+    flex-direction: column;
+    gap: 12px;
+    text-align: center;
+  }
   
   h2 {
     margin: 0;
-    font-size: 20px;
+    font-size: 22px;
     font-weight: 600;
-    color: var(--black);
+    color: var(--text-dark);
+    
+    @media (max-width: 768px) {
+      font-size: 26px;
+    }
   }
   
   .count {
-    background-color: var(--royal-purple);
+    background: linear-gradient(135deg, var(--primary-blue), var(--accent-blue));
     color: var(--white);
-    padding: 4px 12px;
-    border-radius: 20px;
-    font-size: 14px;
+    padding: 8px 16px;
+    border-radius: 24px;
+    font-size: 16px;
     font-weight: 500;
+    box-shadow: 0 2px 8px rgba(135, 206, 235, 0.3);
+    
+    @media (max-width: 768px) {
+      padding: 10px 20px;
+      font-size: 18px;
+    }
   }
 `
 
 const NoResultsContainer = styled.div`
   text-align: center;
-  padding: 40px 20px;
-  color: #666;
+  padding: 48px 24px;
+  color: var(--text-light);
+  
+  @media (max-width: 768px) {
+    padding: 56px 28px;
+  }
   
   h3 {
-    margin-bottom: 10px;
-    color: #333;
+    margin-bottom: 16px;
+    color: var(--text-dark);
+    font-size: 24px;
+    
+    @media (max-width: 768px) {
+      font-size: 28px;
+      margin-bottom: 20px;
+    }
   }
   
   p {
-    margin-bottom: 20px;
+    margin-bottom: 24px;
+    font-size: 18px;
+    
+    @media (max-width: 768px) {
+      font-size: 20px;
+      margin-bottom: 28px;
+    }
   }
 `
 
 const RefreshButton = styled.button`
-  background: var(--royal-purple);
+  background: linear-gradient(135deg, var(--primary-blue), var(--accent-blue));
   color: white;
   border: none;
-  padding: 10px 20px;
-  border-radius: 6px;
+  padding: 16px 32px;
+  border-radius: 12px;
   cursor: pointer;
-  font-size: 14px;
+  font-size: 16px;
+  font-weight: 600;
+  box-shadow: 0 4px 12px rgba(135, 206, 235, 0.3);
+  transition: all 0.2s;
+  
+  @media (max-width: 768px) {
+    padding: 18px 36px;
+    font-size: 18px;
+    border-radius: 16px;
+  }
   
   &:hover {
-    background: #5a3d7a;
+    background: linear-gradient(135deg, var(--accent-blue), var(--primary-blue));
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(135, 206, 235, 0.4);
   }
 `
 

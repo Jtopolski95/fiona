@@ -9,9 +9,13 @@ import './App.css'
 
 const AppContainer = styled.div`
   min-height: 100vh;
-  background-color: var(--white);
+  background-color: var(--pastel-blue);
   display: flex;
   flex-direction: column;
+  
+  /* iOS safe area support */
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
 `
 
 const MainContent = styled.main`
@@ -19,9 +23,12 @@ const MainContent = styled.main`
   padding-top: 60px; /* Account for fixed navbar */
   transition: margin-left 0.3s ease;
   margin-left: ${props => props.$drawerOpen ? '280px' : '0'};
+  background-color: var(--pastel-blue);
+  min-height: calc(100vh - 60px);
   
   @media (max-width: 768px) {
     margin-left: 0;
+    padding-top: 70px; /* Slightly more space on mobile */
   }
 `
 
