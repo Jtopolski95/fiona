@@ -296,7 +296,16 @@ const PropertyCard = forwardRef(({ property, rank, onClick }, ref) => {
 
   const calculateMortgageEstimate = (price) => {
     if (!price) return 'N/A'
-    // Simple mortgage calculation (20% down, 30 year, 6.5% interest)
+    // Use the pre-calculated 20% down payment from your data
+    if (property.monthlyPayment20) {
+      return new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'USD',
+        maximumFractionDigits: 0,
+      }).format(property.monthlyPayment20)
+    }
+    
+    // Fallback calculation if not available
     const downPayment = price * 0.20
     const loanAmount = price - downPayment
     const monthlyRate = 0.065 / 12

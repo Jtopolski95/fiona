@@ -419,7 +419,13 @@ const HomePage = () => {
         </ApiStatusBanner>
       )}
 
-      {error && !isUsingMockData && (
+      {!isUsingMockData && (
+        <ApiStatusBanner $isUsingMock={false}>
+          <strong>🏠 Real Data Mode:</strong> Showing your actual house hunting properties! Drag and drop to rank your favorites.
+        </ApiStatusBanner>
+      )}
+
+      {error && (
         <ApiStatusBanner $isUsingMock={true}>
           <strong>API Notice:</strong> {error}
         </ApiStatusBanner>

@@ -391,6 +391,19 @@ const PropertySearch = ({ onSearch, loading = false }) => {
             <option value="5">5+</option>
           </Select>
         </SearchField>
+
+        <SearchField>
+          <Label>Status</Label>
+          <Select
+            value={searchParams.status || ''}
+            onChange={(e) => handleInputChange('status', e.target.value)}
+          >
+            <option value="">All Properties</option>
+            <option value="Visited">Visited Properties</option>
+            <option value="Liked">Liked Properties</option>
+            <option value="Pending">Pending Visits</option>
+          </Select>
+        </SearchField>
       </SearchGrid>
 
       <ButtonGroup>

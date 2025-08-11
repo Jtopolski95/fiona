@@ -168,7 +168,7 @@ const PropertyPrice = styled.div`
 
 const PropertyDetails = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
   gap: 15px;
   margin-bottom: 25px;
   padding: 20px;
@@ -297,6 +297,10 @@ const PropertyModal = ({ property, onClose }) => {
 🛏️ ${property.bedrooms} bedrooms
 🛁 ${property.bathrooms} bathrooms
 📐 ${property.squareFootage?.toLocaleString()} sq ft
+${property.landAcres ? `🌳 ${property.landAcres} acres` : ''}
+${property.status ? `📋 Status: ${property.status}` : ''}
+${property.allieRanking ? `👩 Allie's Ranking: #${property.allieRanking}` : ''}
+${property.jonRanking ? `👨 Jon's Ranking: #${property.jonRanking}` : ''}
 
 ${property.description}
 
@@ -381,16 +385,76 @@ Found on Fiona Real Estate App!`
               <div className="value">{property.squareFootage?.toLocaleString()}</div>
               <div className="label">Sq Ft</div>
             </DetailItem>
+            {property.landAcres && (
+              <DetailItem>
+                <div className="value">{property.landAcres}</div>
+                <div className="label">Acres</div>
+              </DetailItem>
+            )}
             <DetailItem>
               <div className="value">{property.propertyType}</div>
               <div className="label">Type</div>
             </DetailItem>
+            {property.status && (
+              <DetailItem>
+                <div className="value" style={{fontSize: '14px', color: property.status.includes('Liked') ? '#28a745' : property.status.includes('Disliked') ? '#dc3545' : '#6c757d'}}>
+                  {property.status}
+                </div>
+                <div className="label">Status</div>
+              </DetailItem>
+            )}
           </PropertyDetails>
+          
+          {(property.allieRanking || property.jonRanking) && (
+            <PropertyDescription>
+              <h3>Your Rankings</h3>
+              <div style={{display: 'flex', gap: '20px', marginTop: '10px'}}>
+                {property.allieRanking && (
+                  <div style={{padding: '10px 15px', background: '#e3f2fd', borderRadius: '8px', textAlign: 'center'}}>
+                    <div style={{fontSize: '18px', fontWeight: 'bold', color: '#1976d2'}}>#{property.allieRanking}</div>
+                    <div style={{fontSize: '12px', color: '#666'}}>Allie's Ranking</div>
+                  </div>
+                )}
+                {property.jonRanking && (
+                  <div style={{padding: '10px 15px', background: '#f3e5f5', borderRadius: '8px', textAlign: 'center'}}>
+                    <div style={{fontSize: '18px', fontWeight: 'bold', color: '#7b1fa2'}}>#{property.jonRanking}</div>
+                    <div style={{fontSize: '12px', color: '#666'}}>Jon's Ranking</div>
+                  </div>
+                )}
+              </div>
+            </PropertyDescription>
+          )}
           
           {property.description && (
             <PropertyDescription>
               <h3>Description</h3>
               <p>{property.description}</p>
+            </PropertyDescription>
+          )}
+          
+          {(property.monthlyPayment20 || property.monthlyPayment40 || property.monthlyPayment80) && (
+            <PropertyDescription>
+              <h3>Monthly Payment Options</h3>
+              <div style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))', gap: '15px', marginTop: '15px'}}>
+                {property.monthlyPayment20 && (
+                  <div style={{padding: '15px', background: '#e8f5e8', borderRadius: '8px', textAlign: 'center'}}>
+                    <div style={{fontSize: '16px', fontWeight: 'bold', color: '#2e7d32'}}>${property.monthlyPayment20.toLocaleString()}</div>
+                    <div style={{fontSize: '12px', color: '#666'}}>20% Down</div>
+                  </div>
+                )}
+                {property.monthlyPayment40 && (
+                  <div style={{padding: '15px', background: '#fff3e0', borderRadius: '8px', textAlign: 'center'}}>
+                    <div style={{fontSize: '16px', fontWeight: 'bold', color: '#f57c00'}}>${property.monthlyPayment40.toLocaleString()}</div>
+                    <div style={{fontSize: '12px', color: '#666'}}>40% Down</div>
+                  </div>
+                )}
+                {property.monthlyPayment80 && (
+                  <div style={{padding: '15px', background: '#fce4ec', borderRadius: '8px', textAlign: 'center'}}>
+                    <div style={{fontSize: '16px', fontWeight: 'bold', color: '#c2185b'}}>${property.monthlyPayment80.toLocaleString()}</div>
+                    <div style={{fontSize: '12px', color: '#666'}}>80% Down</div>
+                  </div>
+                )}
+              </div>
             </PropertyDescription>
           )}
           
